@@ -245,11 +245,6 @@ public class RegexGazetteer extends AbstractGazetteer
 			}
 		}
 		if (longestMatch != null) {
-//			Lookup lookup = new Lookup(node.getList(), node.getMajorType(),
-//					node.getMinorType(), node.getLanguage());
-//			if (longestMatch.getFeatureMap() != null) {
-//				lookup.features = longestMatch.getFeatureMap();
-//			}
 			Lookup lookup = createLookup(longestMatch, node);
 			addLookupsToDoc(lookup, startPos, endPos, annotationSet);
 		}
@@ -278,13 +273,7 @@ public class RegexGazetteer extends AbstractGazetteer
 			entry = "\\b" + entry + "\\b";
 			Pattern pattern = Pattern.compile(entry, Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(content);
-			while (matcher.find()) {
-//				Lookup lookup = new Lookup(node.getList(), node.getMajorType(),
-//						node.getMinorType(), node.getLanguage());
-//				
-//				if (gazNode.getFeatureMap() != null){
-//					lookup.features = gazNode.getFeatureMap();
-//				}	
+			while (matcher.find()) {	
 				Lookup lookup = createLookup(gazNode, node);
 				addLookupsToDoc(lookup, (long) matcher.start(), (long) matcher.end(), annotationSet);
 			}
