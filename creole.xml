@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- $Id: creole.xml 17154 2013-12-01 16:44:44Z markagreenwood $ -->
+<!-- creole.xml directory file for ANNIE Processing resources -->
+<CREOLE-DIRECTORY>
+	  <JAR SCAN="true">regexgaz.jar</JAR>
+</CREOLE-DIRECTORY>
