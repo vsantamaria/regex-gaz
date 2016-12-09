@@ -1,6 +1,6 @@
 ### RegexGazetter Plugin for the [GATE] (https://gate.ac.uk/) toolkit
 
-This gazetteer is a modified version of GATE's Default Gazetteer that finds regular expressions in the text of a document in addition to litteral strings.
+This gazetteer is a modified version of GATE's Default Gazetteer that finds regular expressions in the text of a document in addition to literal strings.
 
 ### Requirements
  * GATE 8.x
