@@ -230,8 +230,13 @@ public class RegexGazetteer extends AbstractGazetteer
 		GazetteerList gazList = listsByNode.get(node);
 		for (GazetteerNode gazNode : gazList.getEntries()) {
 			String entry = gazNode.getEntry();
-			//set boundaries to find regex in whole words only
-			entry = "\\b" + entry + "\\b";
+			//if last or end character is \w add \b to entry to match whole words only
+			if (entry.substring(0,1).matches("\\p{L}")) {
+				entry = "\\b"+entry;
+			}
+			if (entry.substring(entry.length()-1).matches("\\p{L}")) {
+				entry = entry+"\\b";
+			}
 			Pattern pattern = Pattern.compile(entry, Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(content);
 			while (matcher.find()) {
@@ -251,7 +256,13 @@ public class RegexGazetteer extends AbstractGazetteer
 	}
 
 	private Lookup createLookup(GazetteerNode gazNode, LinearNode node) {
-		Lookup lookup = new Lookup(node.getList(), node.getMajorType(), node.getMinorType(), node.getLanguage());
+		Lookup lookup;
+		if (node.getAnnotationType() != null) {
+			lookup = new Lookup(node.getList(), node.getMajorType(), 
+					node.getMinorType(), node.getLanguage(), node.getAnnotationType());
+		} else {
+			lookup = new Lookup(node.getList(), node.getMajorType(), node.getMinorType(), node.getLanguage());		
+		}	
 		if (addEntryFeature) {
 			if (gazNode.getFeatureMap() == null){
 				Map<String, Object> gazFeat = new HashMap<>();
@@ -269,8 +280,13 @@ public class RegexGazetteer extends AbstractGazetteer
 		GazetteerList gazList = listsByNode.get(node);
 		for (GazetteerNode gazNode : gazList.getEntries()) {
 			String entry = gazNode.getEntry();
-			//set boundaries to find regex in whole words only
-			entry = "\\b" + entry + "\\b";
+			//if last or end character is \w add \b to entry to match whole words only
+			if (entry.substring(0,1).matches("\\p{L}")) {
+				entry = "\\b"+entry;
+			}
+			if (entry.substring(entry.length()-1).matches("\\p{L}")) {
+				entry = entry+"\\b";
+			}
 			Pattern pattern = Pattern.compile(entry, Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(content);
 			while (matcher.find()) {	

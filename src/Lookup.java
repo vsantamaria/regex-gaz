@@ -68,8 +68,7 @@ public class Lookup implements Serializable {
 	 * @param theLanguages the languages
 	 */
 	public Lookup(String theList, String major, String minor, String theLanguages) {
-		this(theList, major, minor, theLanguages,
-				Constants.LOOKUP);
+		this(theList, major, minor, theLanguages, Constants.LOOKUP);
 	}
 
 	public String majorType;
