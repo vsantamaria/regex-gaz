@@ -230,7 +230,7 @@ public class RegexGazetteer extends AbstractGazetteer
 		GazetteerList gazList = listsByNode.get(node);
 		for (GazetteerNode gazNode : gazList.getEntries()) {
 			String entry = gazNode.getEntry();
-			//if last or end character is \w add \b to entry to match whole words only
+			//if first or last character is \w add \b to entry to match whole words only
 			if (entry.substring(0,1).matches("\\p{L}")) {
 				entry = "\\b"+entry;
 			}
@@ -280,7 +280,7 @@ public class RegexGazetteer extends AbstractGazetteer
 		GazetteerList gazList = listsByNode.get(node);
 		for (GazetteerNode gazNode : gazList.getEntries()) {
 			String entry = gazNode.getEntry();
-			//if last or end character is \w add \b to entry to match whole words only
+			//if first or last character is \w add \b to entry to match whole words only
 			if (entry.substring(0,1).matches("\\p{L}")) {
 				entry = "\\b"+entry;
 			}
