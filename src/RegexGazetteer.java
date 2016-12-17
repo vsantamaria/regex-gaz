@@ -211,60 +211,58 @@ public class RegexGazetteer extends AbstractGazetteer
 		Set<LinearNode> nodes = listsByNode.keySet();
 
 		for (LinearNode node : nodes) {
-			if (longestMatchOnly) {
-				matchLongest(node, content, annotationSet);
-			} else {
-				matchAll(node, content, annotationSet);
-			}
+			searchMatches(node, content, annotationSet);
 		}
 
 		fireProcessFinished();
 		fireStatusChanged("Look-up complete!");
 	}
 
-	private void matchLongest(LinearNode node, String content, AnnotationSet annotationSet) {
-		GazetteerNode longestMatch = null;
-		long startPos = 0;
-		long endPos = 0;
-		int longest = 0;
+	private void searchMatches(LinearNode node, String content, AnnotationSet annotationSet) {
 		GazetteerList gazList = listsByNode.get(node);
 		for (GazetteerNode gazNode : gazList.getEntries()) {
 			String entry = gazNode.getEntry();
-			//if first or last character is \w add \b to entry to match whole words only
-			if (entry.substring(0,1).matches("\\p{L}")) {
-				entry = "\\b"+entry;
+			//if first or last character is a letter add \b to entry to match whole words only
+			if (entry.substring(0, 1).matches("\\p{L}")) {
+				entry = "\\b" + entry;
 			}
-			if (entry.substring(entry.length()-1).matches("\\p{L}")) {
-				entry = entry+"\\b";
+			if (entry.substring(entry.length() - 1).matches("\\p{L}")) {
+				entry = entry + "\\b";
 			}
 			Pattern pattern = Pattern.compile(entry, Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(content);
 			while (matcher.find()) {
-				int span = matcher.end() - matcher.start();
-				if (span > longest) {
-					longest = span;
-					longestMatch = gazNode;
-					startPos = (long) matcher.start();
-					endPos = (long) matcher.end();
+				
+				Long matchStart = (long)matcher.start();
+				Long matchEnd = (long)matcher.end();
+				
+				if (longestMatchOnly) {
+					String type = node.getAnnotationType();
+					//if there are annotations of the same type covering the matched region, continue.
+					AnnotationSet coveringAnnots = annotationSet.getCovering(type, matchStart, matchEnd);
+					if (!coveringAnnots.isEmpty()){ 
+						continue;
+					}
+					//remove annotations of the same type contained in the matched region
+					AnnotationSet containedAnnots = annotationSet.get(type, matchStart, matchEnd);
+					annotationSet.removeAll(containedAnnots);
 				}
+				Lookup lookup = createLookup(gazNode, node);
+				addLookupsToDoc(lookup, matchStart, matchEnd, annotationSet);
 			}
 		}
-		if (longestMatch != null) {
-			Lookup lookup = createLookup(longestMatch, node);
-			addLookupsToDoc(lookup, startPos, endPos, annotationSet);
-		}
 	}
-
-	private Lookup createLookup(GazetteerNode gazNode, LinearNode node) {
+	
+		private Lookup createLookup(GazetteerNode gazNode, LinearNode node) {
 		Lookup lookup;
 		if (node.getAnnotationType() != null) {
-			lookup = new Lookup(node.getList(), node.getMajorType(), 
+			lookup = new Lookup(node.getList(), node.getMajorType(),
 					node.getMinorType(), node.getLanguage(), node.getAnnotationType());
 		} else {
-			lookup = new Lookup(node.getList(), node.getMajorType(), node.getMinorType(), node.getLanguage());		
-		}	
+			lookup = new Lookup(node.getList(), node.getMajorType(), node.getMinorType(), node.getLanguage());
+		}
 		if (addEntryFeature) {
-			if (gazNode.getFeatureMap() == null){
+			if (gazNode.getFeatureMap() == null) {
 				Map<String, Object> gazFeat = new HashMap<>();
 				gazNode.setFeatureMap(gazFeat);
 			}
@@ -274,26 +272,6 @@ public class RegexGazetteer extends AbstractGazetteer
 			lookup.features = gazNode.getFeatureMap();
 		}
 		return lookup;
-	}
-
-	private void matchAll(LinearNode node, String content, AnnotationSet annotationSet) {
-		GazetteerList gazList = listsByNode.get(node);
-		for (GazetteerNode gazNode : gazList.getEntries()) {
-			String entry = gazNode.getEntry();
-			//if first or last character is \w add \b to entry to match whole words only
-			if (entry.substring(0,1).matches("\\p{L}")) {
-				entry = "\\b"+entry;
-			}
-			if (entry.substring(entry.length()-1).matches("\\p{L}")) {
-				entry = entry+"\\b";
-			}
-			Pattern pattern = Pattern.compile(entry, Pattern.DOTALL);
-			Matcher matcher = pattern.matcher(content);
-			while (matcher.find()) {	
-				Lookup lookup = createLookup(gazNode, node);
-				addLookupsToDoc(lookup, (long) matcher.start(), (long) matcher.end(), annotationSet);
-			}
-		}
 	}
 
 	/**
