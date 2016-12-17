@@ -1,3 +1,5 @@
+package regexgaz;
+
 /*
  * Verónica Santamaría
  * modified version of GATE's SharedDefaultGazetteer.java

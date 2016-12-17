@@ -1,3 +1,5 @@
+package regexgaz;
+
 /*
  * LinearNode.java
  * 

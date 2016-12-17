@@ -1,3 +1,5 @@
+package regexgaz;
+
 /** 
  * 
  *  Copyright (c) 1995-2012, The University of Sheffield. See the file
