@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.HashMap;
 import static gate.Utils.addAnn;
 import static gate.Utils.stringFor;
 
@@ -250,25 +249,18 @@ public class RegexGazetteer extends AbstractGazetteer
 					annotationSet.removeAll(containedAnnots);
 				}
 				Lookup lookup = createLookup(gazNode, node);
-				addLookupsToDoc(lookup, matchStart, matchEnd, annotationSet);
+				addLookupsToDoc(lookup, matchStart, matchEnd, annotationSet, gazNode);
 			}
 		}
 	}
 	
-		private Lookup createLookup(GazetteerNode gazNode, LinearNode node) {
+	private Lookup createLookup(GazetteerNode gazNode, LinearNode node) {
 		Lookup lookup;
 		if (node.getAnnotationType() != null) {
 			lookup = new Lookup(node.getList(), node.getMajorType(),
 					node.getMinorType(), node.getLanguage(), node.getAnnotationType());
 		} else {
 			lookup = new Lookup(node.getList(), node.getMajorType(), node.getMinorType(), node.getLanguage());
-		}
-		if (addEntryFeature) {
-			if (gazNode.getFeatureMap() == null) {
-				Map<String, Object> gazFeat = new HashMap<>();
-				gazNode.setFeatureMap(gazFeat);
-			}
-			gazNode.getFeatureMap().put(Constants.LOOKUP_ENTRY, gazNode.getEntry());
 		}
 		if (gazNode.getFeatureMap() != null) {
 			lookup.features = gazNode.getFeatureMap();
@@ -285,7 +277,7 @@ public class RegexGazetteer extends AbstractGazetteer
 	 * @param annotSet the annotation set where the new annotations should be
 	 * added.
 	 */
-	protected void addLookupsToDoc(Lookup lookup, long startPos, long endPos, AnnotationSet annotSet) {
+	protected void addLookupsToDoc(Lookup lookup, long startPos, long endPos, AnnotationSet annotSet, GazetteerNode gazNode) {
 		FeatureMap fm = Factory.newFeatureMap();
 		fm.put(Constants.LOOKUP_MAJOR, lookup.majorType);
 		if (null != lookup.minorType) {
@@ -299,6 +291,9 @@ public class RegexGazetteer extends AbstractGazetteer
 		}
 		if (addStringFeature) {
 			fm.put(Constants.LOOKUP_STRING, stringFor(document, startPos, endPos));
+		}
+		if (addEntryFeature){
+			fm.put(Constants.LOOKUP_ENTRY, gazNode.getEntry());
 		}
 		addAnn(annotSet, startPos, endPos, lookup.annotationType, fm);
 	}

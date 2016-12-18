@@ -95,7 +95,7 @@ public class RegexGazetteerTest {
 		for (Annotation a : inDocumentOrder(as2)) {
 			System.out.println(stringFor(doc, a));
 		}
-		assertEquals(as2.size(),5);
+		assertEquals(as2.size(),6);
 	}
 	
 	@Test

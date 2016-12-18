@@ -1,3 +1,4 @@
 Buen(os)?\s+día(s)?@fr=bonjour@it=buongiorno
 (?i)Hola(\!)?@fr=salut@it=ciao
 Buen.{0,2} dí.{1,2} amig(o|a)
+amigo
